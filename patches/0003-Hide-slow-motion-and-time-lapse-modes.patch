@@ -1,0 +1,44 @@
+From 473cc08cf594d93c3299f472b66d9b6479c895f8 Mon Sep 17 00:00:00 2001
+From: wowodymyr <wowodymyr@localhost>
+Date: Wed, 18 Nov 2026 22:04:20 +0200
+Subject: [PATCH 3/3] Hide slow motion and time-lapse modes
+
+Slow motion only lowers the frame rate on gauguin, and time-lapse goes
+with it. Report both mode entries as unsupported so they don't show up.
+---
+ .../camera/features/mode/fast/FastMotionModuleEntry.smali    | 5 +++++
+ .../camera/features/mode/slow/SlowMotionModuleEntry.smali    | 5 +++++
+ 2 files changed, 10 insertions(+)
+
+diff --git a/smali/com/android/camera/features/mode/fast/FastMotionModuleEntry.smali b/smali/com/android/camera/features/mode/fast/FastMotionModuleEntry.smali
+index a29f0cd..1a09499 100644
+--- a/smali/com/android/camera/features/mode/fast/FastMotionModuleEntry.smali
++++ b/smali/com/android/camera/features/mode/fast/FastMotionModuleEntry.smali
+@@ -118,6 +118,11 @@
+ .method public support()Z
+     .locals 1
+ 
++    # Drop time-lapse together with slow motion
++    const/4 v0, 0x0
++
++    return v0
++
+     .line 1
+     invoke-static {}, LOooO00o/OooO0Oo/OooO00o/OooO00o;->o0OOoOO()LOooO00o/OooO0Oo/OooO00o/OooO00o;
+ 
+diff --git a/smali/com/android/camera/features/mode/slow/SlowMotionModuleEntry.smali b/smali/com/android/camera/features/mode/slow/SlowMotionModuleEntry.smali
+index 4ca60d8..f2f6655 100644
+--- a/smali/com/android/camera/features/mode/slow/SlowMotionModuleEntry.smali
++++ b/smali/com/android/camera/features/mode/slow/SlowMotionModuleEntry.smali
+@@ -118,6 +118,11 @@
+ .method public support()Z
+     .locals 1
+ 
++    # Slow motion only drops the frame rate on gauguin
++    const/4 v0, 0x0
++
++    return v0
++
+     .line 1
+     invoke-static {}, LOooO00o/OooO0Oo/OooO00o/OooO00o;->o0OOoOO()LOooO00o/OooO0Oo/OooO00o/OooO00o;
+ 

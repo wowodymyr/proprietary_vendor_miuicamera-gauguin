@@ -1,0 +1,31 @@
+From a0e4212b2ad259c7b9333c29b42cbbab1d8a909e Mon Sep 17 00:00:00 2001
+From: wowodymyr <wowodymyr@localhost>
+Date: Wed, 18 Nov 2026 22:04:20 +0200
+Subject: [PATCH 1/3] Disable lens dirty detection
+
+With lens dirty detection enabled, the camera HAL runs
+MiAiCamera::DirtyCamera from libcamera_dirty.so on preview frames. It
+reads past the end of the preview buffer on AOSP and crashes the camera
+provider a few seconds into preview.
+
+Report the feature as unsupported, so MiuiCamera never enables it.
+---
+ smali_classes2/com/android/camera2/CameraCapabilities.smali | 5 +++++
+ 1 file changed, 5 insertions(+)
+
+diff --git a/smali_classes2/com/android/camera2/CameraCapabilities.smali b/smali_classes2/com/android/camera2/CameraCapabilities.smali
+index 3fb1712..e0b9842 100644
+--- a/smali_classes2/com/android/camera2/CameraCapabilities.smali
++++ b/smali_classes2/com/android/camera2/CameraCapabilities.smali
+@@ -12984,6 +12984,11 @@
+ .method public isSupportLensDirtyDetect()Z
+     .locals 2
+ 
++    # libcamera_dirty.so in the vendor camera HAL crashes on our preview buffers
++    const/4 v0, 0x0
++
++    return v0
++
+     .line 1
+     sget-object v0, Lcom/android/camera2/vendortag/CameraCharacteristicsVendorTags;->SUPPORT_DIRTY_DETECT:Lcom/android/camera2/vendortag/VendorTag;
+ 
